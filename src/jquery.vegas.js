@@ -178,6 +178,13 @@
                 }
             }
 
+            // If delay is not long enough, background might not
+            // load in time and resize() will fail.
+            // Set delay to be twice as long as fade
+            if (options.backgrounds[0].fade !== null){
+                options.delay = options.backgrounds[0].fade * 2;
+            }
+
             backgrounds = options.backgrounds;
             delay = options.delay;
             step = options.step;
@@ -350,13 +357,46 @@
             newLeft, newTop,
             properties;
 
-        if (rw > ri) {
-            newWidth = wh / ri;
-            newHeight = wh;
-        } else {
-            newWidth = ww;
-            newHeight = ww * ri;
+        // Always fill width first and zoom in portrait photo
+        // if (rw > ri) {
+        //     newWidth = wh / ri;
+        //     newHeight = wh;
+        // } else {
+        //     newWidth = ww;
+        //     newHeight = ww * ri;
+        // }
+
+        // Scale down if image is larger than window
+        var scaleRatio = 1;
+        if (ww < iw || wh < ih) {
+            if (iw > ih) {  // landscape so fit width first
+                if (iw > ww) {  // scale down
+                    scaleRatio = ww / iw;
+                }
+                else {  //scale up
+                    scaleRatio = iw / ww;
+                }
+            }
+            else { // portrait so fit height first
+                if (ih > wh) {  // scale down
+                    scaleRatio = wh / ih;
+                }
+                else {  //scale up
+                    scaleRatio = ih / wh;
+                }
+            }
         }
+        else{   // scale up if image is smaller than window
+            if (iw > ih){   // landscape so fit width first
+                scaleRatio = ww / iw;
+            }
+            else {
+                scaleRatio = wh / ih;
+            }
+        }
+
+        newWidth = scaleRatio * iw;
+        newHeight = scaleRatio * ih;
 
         properties = {
             'width': newWidth + 'px',

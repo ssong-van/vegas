@@ -1,3 +1,8 @@
+Changelog
+====
+1. Change background image size if it is bigger than viewport so the entire image can be displayed
+2. Fixed an issue where Vegas crashes when background image is loaded during slideshow
+
 Vegas – Fullscreen Backgrounds and Slideshows with jQuery
 =========================================================
 

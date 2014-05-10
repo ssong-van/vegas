@@ -1,10 +1,10 @@
  // ----------------------------------------------------------------------------
  // Vegas - Fullscreen Backgrounds and Slideshows with jQuery.
- // v1.3.4 - released 2013-12-16 13:28
+ // v1.3.4 - released 2014-05-10 13:09
  // Licensed under the MIT license.
  // http://vegas.jaysalvat.com/
  // ----------------------------------------------------------------------------
- // Copyright (C) 2010-2013 Jay Salvat
+ // Copyright (C) 2010-2014 Jay Salvat
  // http://jaysalvat.com/
  // ----------------------------------------------------------------------------
 
@@ -123,6 +123,9 @@
                 if (options.preload) {
                     $.vegas("preload", options.backgrounds);
                 }
+            }
+            if (options.backgrounds[0].fade !== null) {
+                options.delay = options.backgrounds[0].fade * 2;
             }
             backgrounds = options.backgrounds;
             delay = options.delay;
@@ -243,13 +246,30 @@
             return;
         }
         var vp = getViewportSize(), ww = vp.width, wh = vp.height, iw = $img.width(), ih = $img.height(), rw = wh / ww, ri = ih / iw, newWidth, newHeight, newLeft, newTop, properties;
-        if (rw > ri) {
-            newWidth = wh / ri;
-            newHeight = wh;
+        var scaleRatio = 1;
+        if (ww < iw || wh < ih) {
+            if (iw > ih) {
+                if (iw > ww) {
+                    scaleRatio = ww / iw;
+                } else {
+                    scaleRatio = iw / ww;
+                }
+            } else {
+                if (ih > wh) {
+                    scaleRatio = wh / ih;
+                } else {
+                    scaleRatio = ih / wh;
+                }
+            }
         } else {
-            newWidth = ww;
-            newHeight = ww * ri;
+            if (iw > ih) {
+                scaleRatio = ww / iw;
+            } else {
+                scaleRatio = wh / ih;
+            }
         }
+        newWidth = scaleRatio * iw;
+        newHeight = scaleRatio * ih;
         properties = {
             width: newWidth + "px",
             height: newHeight + "px",
